@@ -4,9 +4,9 @@
 
 **一款安全、便捷的本地密码管理工具**
 
-[![License](https://img.shields.io/github/license/Ljznnn/cryptokepper)](LICENSE)
+[![License](https://img.shields.io/github/license/Ljznnn/cryptokeeper)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-blue)]()
-[![Version](https://img.shields.io/github/package-json/v/Ljznnn/cryptokepper)]()
+[![Version](https://img.shields.io/github/package-json/v/Ljznnn/cryptokeeper)]()
 
 🔐 **安全加密** • 📱 **多平台支持** • 🌐 **离线使用** • 🎨 **简洁界面**
 
@@ -138,7 +138,7 @@ npm run build:linux # Linux
 
 ```bash
 # Fork 项目并克隆
-git clone https://github.com/Ljznnn/cryptokepper.git
+git clone https://github.com/Ljznnn/cryptokeeper.git
 cd cryptokeeper
 
 # 安装依赖
@@ -165,7 +165,7 @@ npm run dev
 
 如有问题或建议，请通过以下方式联系：
 
-- 提交 [Issue](https://github.com/Ljznnn/cryptokepper/issues)
+- 提交 [Issue](https://github.com/Ljznnn/cryptokeeper/issues)
 - 发送邮件至：526461615@qq.com
 
 ---

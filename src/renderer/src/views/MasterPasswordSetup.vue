@@ -1,4 +1,4 @@
-<template>
+ss<template>
   <div class="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
     <el-card class="w-full max-w-md">
       <template #header>
@@ -119,7 +119,7 @@ const onPasswordInput = () => {
   if (passwordForm.newPassword) {
     passwordStrength.value = passwordCrypto.evaluatePasswordStrength(passwordForm.newPassword);
   } else {
-    passwordStrength.value = new passwordStrength;
+    passwordStrength.value = null;
   }
 };
 
@@ -131,7 +131,8 @@ const onWeakPasswordModeChange = () => {
       '弱密码模式警告',
       {
         confirmButtonText: '我了解风险',
-        type: 'warning'
+        type: 'warning',
+        showCancelButton: false
       }
     );
     passwordStrength.value = null;
@@ -143,19 +144,19 @@ const onWeakPasswordModeChange = () => {
 
 // 获取强度颜色
 const getStrengthColor = (score) => {
-  const colors = ['#f56c6c', '#e6a23c', '#409eff', '#67c23a'];
+  const colors = ['#f56c6c', '#e6a23c', '#409eff', '#67c23a', '#67c23a'];
   return colors[score] || colors[0];
 };
 
 // 获取强度文本
 const getStrengthText = (score) => {
-  const texts = ['很弱', '弱', '一般', '强'];
+  const texts = ['很弱', '弱', '一般', '强', '很强'];
   return texts[score] || texts[0];
 };
 
 // 获取强度CSS类
 const getStrengthClass = (score) => {
-  const classes = ['text-red-600', 'text-orange-600', 'text-blue-600', 'text-green-600'];
+  const classes = ['text-red-600', 'text-orange-600', 'text-blue-600', 'text-green-600', 'text-green-600'];
   return classes[score] || classes[0];
 };
 
@@ -197,25 +198,7 @@ const handleSetMasterPassword = async () => {
   await passwordFormRef.value.validate(async (valid) => {
     if (valid) {
       try {
-        // 再次验证密码强度
-        const strength = passwordCrypto.evaluatePasswordStrength(passwordForm.newPassword);
-        if (!strength.isValid && !useWeakPasswordMode.value) {
-          ElMessageBox.confirm(
-            '您正在尝试使用弱密码，这会显著降低数据安全性。建议使用高强度密码来保护您的敏感信息。是否继续？',
-            '弱密码安全警告',
-            {
-              confirmButtonText: '继续使用弱密码',
-              cancelButtonText: '返回修改',
-              type: 'warning'
-            }
-          ).then(async () => {
-            await completeSetMasterPassword();
-          }).catch(() => {
-            // 用户取消，什么也不做
-          });
-        } else {
-          await completeSetMasterPassword();
-        }
+        await completeSetMasterPassword();
       } catch (error) {
         console.log(error)
         ElMessage.error('设置密码失败出现错误')

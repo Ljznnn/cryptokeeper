@@ -315,10 +315,10 @@ export class PasswordCrypto {
     // 长度检查
     if (password.length < 8) {
       result.feedback.warning = '密码长度至少8位';
-    } else if (password.length >= 12) {
-      result.score += 1;
     } else if (password.length >= 16) {
       result.score += 2;
+    } else if (password.length >= 12) {
+      result.score += 1;
     }
 
     // 字符类型多样性
@@ -353,7 +353,6 @@ export class PasswordCrypto {
         break;
       }
     }
-
     // 评分转换为等级
     result.isValid = result.score >= 3;
 

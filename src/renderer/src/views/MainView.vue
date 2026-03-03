@@ -3,7 +3,7 @@
     <!-- 主界面 -->
     <div class="flex flex-col h-full">
       <!-- 顶部导航栏 -->
-      <header class="bg-white shadow px-4 py-3 flex justify-between items-center">
+      <header class="bg-white shadow px-4 py-3 flex justify-between items-center border-b ">
         <div>
           <h1 class="text-xl font-bold text-blue-600 select-none">CryptoKeeper</h1>
         </div>

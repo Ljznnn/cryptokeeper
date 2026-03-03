@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
+  <div class="flex items-center justify-center min-h-screen background-container">
     <el-card class="w-full max-w-md">
       <template #header>
         <div class="text-center">
@@ -156,3 +156,11 @@ onUnmounted(() => {
   }
 });
 </script>
+<style scoped>
+.background-container {
+  background-image: url(/images/login_bg.png);
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+}
+</style>

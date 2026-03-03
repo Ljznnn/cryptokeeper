@@ -22,7 +22,7 @@
     "build:linux": "npm run build-nocheck && electron-builder --linux"
   },
   "build": {
-    "appId": "com.jzlin.cryptokepper",
+    "appId": "com.jzlin.cryptokeeper",
     "productName": "密钥管理助手",
     "directories": {
       "output": "dist"

@@ -29,7 +29,10 @@
     },
     "win": {
       "icon": "build/icon.ico",
-      "target": ["nsis", "portable"]
+      "target": [
+        "nsis",
+        "portable"
+      ]
     },
     "mac": {
       "icon": "build/icon.icns",
@@ -37,7 +40,10 @@
     },
     "linux": {
       "icon": "build/icons/",
-      "target": ["AppImage", "deb"]
+      "target": [
+        "AppImage",
+        "deb"
+      ]
     },
     "nsis": {
       "oneClick": false,

@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
-import {Ref,ref} from 'vue'
+import { Ref, ref } from 'vue'
 import * as Types from '../models/types'
-import {ElMessage} from "element-plus";
-import {useSettingsStore} from './settingsStore'
+import { ElMessage } from 'element-plus'
+import { useSettingsStore } from './settingsStore'
 
 /**
  * 命名空间、密码本相关数据管理
@@ -64,8 +64,8 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       if (spaceId == '') {
         return
       }
-      currentSpace.value = spaces.value.find(space => space.id === spaceId) ?? null
-      currentSpaceId.value = currentSpace.value?.id??''
+      currentSpace.value = spaces.value.find((space) => space.id === spaceId) ?? null
+      currentSpaceId.value = currentSpace.value?.id ?? ''
       // 加载该空间下的密码本
       loadPasswordBooks(spaceId)
       currentBook.value = null
@@ -85,7 +85,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       }
       const result = await window.api.deleteSpace(spaceId)
       if (result.success) {
-        spaces.value = spaces.value.filter(space => space.id !== spaceId)
+        spaces.value = spaces.value.filter((space) => space.id !== spaceId)
         currentSpaceId.value = ''
         currentSpace.value = null
         passwordBooks.value = []
@@ -104,7 +104,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
    */
   const loadPasswordBooks = async (spaceId: string): Promise<Types.PasswordBook[]> => {
     try {
-      const {success, message, data} = await window.api.getPasswordBooks(spaceId)
+      const { success, message, data } = await window.api.getPasswordBooks(spaceId)
       if (!success) {
         throw new Error(message)
       }
@@ -124,10 +124,10 @@ export const useWorkspaceStore = defineStore('workspace', () => {
    */
   const switchPasswordBook = async (bookId: string): Promise<Types.Space> => {
     try {
-      currentBook.value = passwordBooks.value.find(book => book.id === bookId) ?? null
+      currentBook.value = passwordBooks.value.find((book) => book.id === bookId) ?? null
       // 加载密码
       if (currentSpace.value?.id) {
-        loadPasswords(currentSpace.value.id, bookId);
+        loadPasswords(currentSpace.value.id, bookId)
       }
     } catch (error) {
       console.error('切换空间失败:', error)
@@ -140,11 +140,11 @@ export const useWorkspaceStore = defineStore('workspace', () => {
    */
   const loadPasswords = async (spaceId: string, bookId: string): Promise<Types.Password[]> => {
     try {
-      const {success, message, data} = await window.api.getPasswords(spaceId, bookId)
+      const { success, message, data } = await window.api.getPasswords(spaceId, bookId)
       if (!success) {
         throw new Error(message)
       }
-      return passwords.value = data
+      return (passwords.value = data)
     } catch (error) {
       console.error('获取密码列表失败:', error)
       return []
@@ -154,7 +154,11 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   /**
    * 创建密码本
    */
-  const createPasswordBook = async (name: string, spaceId: string, desc?: string): Promise<Types.PasswordBook> => {
+  const createPasswordBook = async (
+    name: string,
+    spaceId: string,
+    desc?: string
+  ): Promise<Types.PasswordBook> => {
     try {
       const result = await window.api.createPasswordBook(name, spaceId, desc)
       if (result.success) {
@@ -176,7 +180,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     try {
       const result = await window.api.deletePasswordBook(spaceId, bookId)
       if (result.success) {
-        passwordBooks.value = passwordBooks.value.filter(book => book.id !== bookId)
+        passwordBooks.value = passwordBooks.value.filter((book) => book.id !== bookId)
         return true
       } else {
         throw new Error(result.message)
@@ -190,11 +194,15 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   /**
    * 更新密码本
    */
-  const updatePasswordBook = async (bookId: string, name: string, desc?: string): Promise<Types.PasswordBook> => {
+  const updatePasswordBook = async (
+    bookId: string,
+    name: string,
+    desc?: string
+  ): Promise<Types.PasswordBook> => {
     try {
       const result = await window.api.updatePasswordBook(bookId, name, desc)
       if (result.success) {
-        const index = passwordBooks.value.findIndex(book => book.id === bookId)
+        const index = passwordBooks.value.findIndex((book) => book.id === bookId)
         if (index !== -1) {
           passwordBooks.value[index] = result.book
           // 如果是当前选中的密码本，也需要更新
@@ -215,11 +223,15 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   /**
    * 创建密码
    */
-  const createPassword = async (passwordData: Omit<Types.Password, 'status' | 'iv' | 'id' | 'mask' | 'createTime'>, spaceId: string, bookId: string): Promise<Types.Password> => {
+  const createPassword = async (
+    passwordData: Omit<Types.Password, 'status' | 'iv' | 'id' | 'mask' | 'createTime'>,
+    spaceId: string,
+    bookId: string
+  ): Promise<Types.Password> => {
     try {
       const result = await window.api.createPassword(passwordData, spaceId, bookId)
       if (result.success) {
-        currentBook.value?.pws?.push(result.password);
+        currentBook.value?.pws?.push(result.password)
         passwords.value.push(result.password)
         return result.password
       } else {
@@ -234,11 +246,15 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   /**
    * 更新密码
    */
-  const updatePassword = async (spaceId: string, bookId: string, passwordData: Partial<Types.Password>): Promise<Types.Password> => {
+  const updatePassword = async (
+    spaceId: string,
+    bookId: string,
+    passwordData: Partial<Types.Password>
+  ): Promise<Types.Password> => {
     try {
       const result = await window.api.updatePassword(spaceId, bookId, passwordData)
       if (result.success) {
-        const index = passwords.value.findIndex(p => p.id === passwordData.id)
+        const index = passwords.value.findIndex((p) => p.id === passwordData.id)
         if (index !== -1) {
           passwords.value[index] = result.password
         }
@@ -259,7 +275,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     try {
       const result = await window.api.deletePassword(spaceId, bookId, id)
       if (result.success) {
-        passwords.value = passwords.value.filter(password => password.id !== id)
+        passwords.value = passwords.value.filter((password) => password.id !== id)
         return true
       } else {
         throw new Error(result.message)

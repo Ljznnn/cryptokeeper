@@ -1,14 +1,13 @@
 <template>
   <div class="book-list">
-    <el-menu
-      :default-active="currentBookId"
-      class="border-none">
+    <el-menu :default-active="currentBookId" class="border-none">
       <el-menu-item
         v-for="book in books"
         :key="book.id"
         :index="book.id"
         @click="$emit('select-book', book)"
-        class="book-menu-item">
+        class="book-menu-item"
+      >
         <div class="book-content">
           <div class="book-header">
             <el-icon class="book-icon"><Notebook /></el-icon>
@@ -16,8 +15,8 @@
           </div>
 
           <!-- 密码本说明 -->
-          <div v-if="book.desc" >
-            <el-text type="info" truncated>{{book.desc}}</el-text>
+          <div v-if="book.desc">
+            <el-text type="info" truncated>{{ book.desc }}</el-text>
           </div>
 
           <div class="book-actions">
@@ -25,10 +24,10 @@
               <el-icon class="more-icon"><MoreFilled /></el-icon>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item :command="{action: 'edit', book: book}">
+                  <el-dropdown-item :command="{ action: 'edit', book: book }">
                     编辑
                   </el-dropdown-item>
-                  <el-dropdown-item :command="{action: 'delete', book: book}">
+                  <el-dropdown-item :command="{ action: 'delete', book: book }">
                     删除
                   </el-dropdown-item>
                 </el-dropdown-menu>
@@ -42,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, ref, watch} from 'vue'
+import { ref, watch } from 'vue'
 import { Notebook, MoreFilled } from '@element-plus/icons-vue'
 import * as Types from '../../models/types'
 
@@ -64,24 +63,27 @@ const emit = defineEmits<{
 const currentBookId = ref('')
 
 // 自动选中第一个
-watch(() => props.books, (newList) => {
-  if (newList.length > 0) {
-    const firstItem = newList[0]
-    currentBookId.value = firstItem.id
-    emit('select-book', firstItem)
-  } else {
-    emit('no-book')
-  }
-}, { immediate: true })
+watch(
+  () => props.books,
+  (newList) => {
+    if (newList.length > 0) {
+      const firstItem = newList[0]
+      currentBookId.value = firstItem.id
+      emit('select-book', firstItem)
+    } else {
+      emit('no-book')
+    }
+  },
+  { immediate: true }
+)
 
-const handleCommand = (command: {action: string, book: Types.PasswordBook}) => {
+const handleCommand = (command: { action: string; book: Types.PasswordBook }) => {
   if (command.action === 'edit') {
     emit('edit-book', command.book)
   } else if (command.action === 'delete') {
     emit('delete-book', command.book)
   }
 }
-
 </script>
 
 <style scoped>

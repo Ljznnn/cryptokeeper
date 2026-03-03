@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import {onMounted} from 'vue'
+import { onMounted } from 'vue'
 import { useAuthStore } from './store/authStore'
 
 const { checkMasterPasswordStatus } = useAuthStore()
@@ -15,6 +15,4 @@ onMounted(async () => {
 })
 </script>
 
-<style>
-
-</style>
+<style></style>

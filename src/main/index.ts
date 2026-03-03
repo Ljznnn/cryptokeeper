@@ -2,7 +2,7 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { initializeData, setupIPCHandlers } from './ipcHandlersDb';  // 修改导入路径
+import { initializeData, setupIPCHandlers } from './ipcHandlersDb' // 修改导入路径
 
 function createWindow(): void {
   // Create the browser window.
@@ -63,10 +63,10 @@ app.whenReady().then(() => {
   ipcMain.on('ping', () => console.log('pong'))
 
   // 初始化数据
-  initializeData();
+  initializeData()
 
   // 设置IPC处理程序
-  setupIPCHandlers();
+  setupIPCHandlers()
 
   createWindow()
 

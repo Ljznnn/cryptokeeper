@@ -1,8 +1,6 @@
-enum  PasswordStatus {
+enum PasswordStatus {
   ACTIVE = 'ACTIVE',
   INACTIVE = 'INACTIVE'
 }
 
-export {
-  PasswordStatus
-}
+export { PasswordStatus }

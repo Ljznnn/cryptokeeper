@@ -109,6 +109,7 @@ npm run build:linux # Linux
 ## 🛠 技术栈
 
 ### 前端技术
+
 - **Vue 3** - 渐进式 JavaScript 框架
 - **TypeScript** - 静态类型检查
 - **Element Plus** - Vue 3 组件库
@@ -117,18 +118,18 @@ npm run build:linux # Linux
 - **Vue Router** - 路由管理
 
 ### 后端技术
+
 - **Electron** - 跨平台桌面应用框架
 - **Node.js** - JavaScript 运行时
 - **Better-SQLite3** - 高性能 SQLite 数据库
 - **Crypto** - Node.js 内置加密模块
 
 ### 开发工具
+
 - **Electron-Vite** - Electron 专用 Vite 插件
 - **Electron Builder** - 应用打包工具
 
 ## 📸 界面预览
-
-
 
 ## 🤝 贡献指南
 

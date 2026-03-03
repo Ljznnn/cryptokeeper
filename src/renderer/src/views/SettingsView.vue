@@ -16,20 +16,23 @@
             </template>
             <el-form :model="settingsForm" label-width="120px">
               <el-form-item label="默认空间">
-                <el-select v-model="settingsForm.defaultSpaceId" placeholder="请选择默认空间" no-data-text="无可用空间" class="w-full" >
+                <el-select
+                  v-model="settingsForm.defaultSpaceId"
+                  placeholder="请选择默认空间"
+                  no-data-text="无可用空间"
+                  class="w-full"
+                >
                   <el-option
                     v-for="space in workspaceStore.spaces"
                     :key="space.id"
                     :label="space.name"
-                    :value="space.id">
+                    :value="space.id"
+                  >
                   </el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="主密码">
                 <el-button @click="showChangePasswordDialog" type="primary" plain>修改</el-button>
-              </el-form-item>
-              <el-form-item>
-                <el-button type="primary" @click="saveSettings">保存设置</el-button>
               </el-form-item>
             </el-form>
           </el-card>
@@ -50,7 +53,9 @@
 
               <!-- 密码本统计 -->
               <el-card class="text-center">
-                <div class="text-3xl font-bold text-green-600 mb-2">{{ actualPasswordBookCount }}</div>
+                <div class="text-3xl font-bold text-green-600 mb-2">
+                  {{ actualPasswordBookCount }}
+                </div>
                 <div class="text-lg text-gray-600">密码本总数</div>
               </el-card>
 
@@ -96,7 +101,15 @@
               <div>
                 <h4 class="text-lg font-medium mb-2">🔗 项目信息</h4>
                 <ul class="list-disc list-inside space-y-1 text-gray-700">
-                  <li>GitHub: <a href="https://github.com/Ljznnn/cryptokeeper" class="text-blue-600 hover:underline" target="_blank">https://github.com/Ljznnn/cryptokeeper</a></li>
+                  <li>
+                    GitHub:
+                    <a
+                      href="https://github.com/Ljznnn/cryptokeeper"
+                      class="text-blue-600 hover:underline"
+                      target="_blank"
+                      >https://github.com/Ljznnn/cryptokeeper</a
+                    >
+                  </li>
                   <li>版本: 1.0.0</li>
                   <li>许可证: MIT</li>
                 </ul>
@@ -106,8 +119,7 @@
                 <h4 class="text-lg font-medium mb-2">⚠️ 安全警告</h4>
                 <p class="text-gray-700">
                   本软件提供本地密码管理功能，请妥善保管您的主密码。
-                  主密码一旦丢失将无法恢复任何数据。
-                  建议定期备份重要密码数据。
+                  主密码一旦丢失将无法恢复任何数据。 建议定期备份重要密码数据。
                 </p>
               </div>
             </div>
@@ -120,29 +132,88 @@
     <el-dialog
       v-model="changePasswordDialogVisible"
       title="修改主密码"
-      width="500px"
-      :before-close="handleCloseDialog">
+      width="600px"
+      :before-close="handleCloseDialog"
+    >
       <el-form
         :model="passwordForm"
         :rules="passwordRules"
         ref="passwordFormRef"
         label-width="100px">
+        <el-form-item label="旧密码" prop="oldPassword">
+          <el-input
+            v-model="passwordForm.oldPassword"
+            type="password"
+            placeholder="请输入当前主密码"
+            show-password>
+          </el-input>
+        </el-form-item>
         <el-form-item label="新密码" prop="newPassword">
           <el-input
             v-model="passwordForm.newPassword"
             type="password"
             placeholder="请输入新密码"
-            show-password>
+            show-password
+            @input="onPasswordInput"
+          >
           </el-input>
+          <!-- 密码强度指示器 -->
+          <div v-if="passwordStrength" class="mt-2">
+            <div class="flex items-center mb-1">
+              <span class="text-sm mr-2">密码强度:</span>
+              <el-progress
+                :percentage="passwordStrength.score * 25"
+                :stroke-width="6"
+                :color="getStrengthColor(passwordStrength.score)"
+              >
+              </el-progress>
+              <span
+                class="ml-2 text-sm font-medium"
+                :class="getStrengthClass(passwordStrength.score)"
+              >
+                {{ getStrengthText(passwordStrength.score) }}
+              </span>
+            </div>
+
+            <!-- 安全警告 -->
+            <div v-if="passwordStrength.feedback.warning" class="text-orange-600 text-sm mb-1">
+              ⚠️ {{ passwordStrength.feedback.warning }}
+            </div>
+
+            <!-- 改进建议 -->
+            <div
+              v-if="passwordStrength.feedback.suggestions.length > 0 && !useWeakPasswordMode"
+              class="text-blue-600 text-sm"
+            >
+              <div class="font-medium mb-1">改进建议:</div>
+              <ul class="list-disc list-inside space-y-1">
+                <li v-for="suggestion in passwordStrength.feedback.suggestions" :key="suggestion">
+                  {{ suggestion }}
+                </li>
+              </ul>
+            </div>
+          </div>
         </el-form-item>
         <el-form-item label="确认密码" prop="confirmPassword">
           <el-input
             v-model="passwordForm.confirmPassword"
             type="password"
             placeholder="请再次输入新密码"
-            show-password>
+            show-password
+          >
           </el-input>
         </el-form-item>
+
+        <!-- 弱密码模式选项 -->
+        <div class="mb-4">
+          <el-checkbox v-model="useWeakPasswordMode" @change="onWeakPasswordModeChange">
+            允许使用弱密码（不推荐）
+          </el-checkbox>
+          <p class="text-xs text-gray-500 mt-1">
+            启用后可忽略密码强度要求，但会降低数据安全性。
+            建议始终使用高强度密码来保护您的敏感信息。
+          </p>
+        </div>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
@@ -150,8 +221,10 @@
           <el-button
             type="primary"
             @click="handleChangePassword"
-            :loading="changingPassword">
-            确认修改
+            :loading="changingPassword"
+            :disabled="!isPasswordStrongEnough"
+          >
+            {{ isPasswordStrongEnough ? '确认修改' : '密码强度不足' }}
           </el-button>
         </span>
       </template>
@@ -160,11 +233,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, reactive, computed } from 'vue'
+import { ref, onMounted, reactive, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import {useWorkspaceStore} from "@renderer/store/workspaceStore";
-import {useSettingsStore} from '@renderer/store/settingsStore'
+import { useWorkspaceStore } from '@renderer/store/workspaceStore'
+import { useSettingsStore } from '@renderer/store/settingsStore'
 import { passwordCrypto } from '@renderer/utils/cryptoUtils'
 
 const router = useRouter()
@@ -174,25 +247,41 @@ const passwordFormRef = ref()
 const changingPassword = ref(false)
 const changePasswordDialogVisible = ref(false)
 const activeTab = ref('basic')
+const passwordStrength = ref(null)
+const useWeakPasswordMode = ref(false)
 
 const settingsForm = ref({
   defaultSpaceId: ''
 })
 
 const passwordForm = reactive({
+  oldPassword: '',
   newPassword: '',
   confirmPassword: ''
 })
 
+// 计算密码是否足够强壮
+const isPasswordStrongEnough = computed(() => {
+  if (useWeakPasswordMode.value) {
+    return true // 弱密码模式下始终允许
+  }
+  if (passwordStrength.value == null) {
+    return false // 未评估时默认不允许
+  }
+  return passwordStrength.value?.isValid === true
+})
+
 const passwordRules = {
+  oldPassword: [
+    { required: true, message: '请输入当前主密码', trigger: 'blur' }
+  ],
   newPassword: [
     { required: true, message: '请输入新密码', trigger: 'blur' },
     {
       validator: (rule, value, callback) => {
-        const strength = passwordCrypto.evaluatePasswordStrength(value);
-        if (value.length < 12) {
-          callback(new Error('密码长度至少12位'))
-        } else if (!strength.isValid) {
+        if (useWeakPasswordMode.value) {
+          callback() // 弱密码模式下忽略警告
+        } else if (!passwordStrength.value?.isValid) {
           callback(new Error('密码强度不足，请参考建议进行改进'))
         } else {
           callback()
@@ -224,26 +313,27 @@ onMounted(async () => {
   }
 
   // 确保工作区数据已加载
-  await workspaceStore.initWorkspace();
+  await workspaceStore.initWorkspace()
 
   // 加载统计数据
-  await loadStats();
+  await loadStats()
 })
 
-// 保存设置
-const saveSettings = async () => {
-  try {
-    const success = await settingsStore.updateSetting('defaultSpaceId', settingsForm.value.defaultSpaceId)
-    if (success) {
-      ElMessage.success('设置已保存')
-    } else {
+// 监听设置变化，实时保存
+watch(
+  () => settingsForm.value.defaultSpaceId,
+  async (newValue) => {
+    try {
+      const success = await settingsStore.updateSetting('defaultSpaceId', newValue)
+      if (success) {
+        ElMessage.success('设置已保存')
+      }
+    } catch (error) {
+      console.error('保存设置失败:', error)
       ElMessage.error('保存设置失败')
     }
-  } catch (error) {
-    console.error('保存设置失败:', error)
-    ElMessage.error('保存设置失败')
   }
-}
+)
 
 // 显示修改密码对话框
 const showChangePasswordDialog = () => {
@@ -254,12 +344,64 @@ const showChangePasswordDialog = () => {
 const handleCloseDialog = () => {
   changePasswordDialogVisible.value = false
   // 清空表单
+  passwordForm.oldPassword = ''
   passwordForm.newPassword = ''
   passwordForm.confirmPassword = ''
+  passwordStrength.value = null
+  useWeakPasswordMode.value = false
   // 重置表单验证状态
   if (passwordFormRef.value) {
     passwordFormRef.value.resetFields()
   }
+}
+
+// 密码输入事件处理
+const onPasswordInput = () => {
+  if (useWeakPasswordMode.value) {
+    passwordStrength.value = null
+    return
+  }
+  if (passwordForm.newPassword) {
+    passwordStrength.value = passwordCrypto.evaluatePasswordStrength(passwordForm.newPassword)
+  } else {
+    passwordStrength.value = null
+  }
+}
+
+// 弱密码模式切换
+const onWeakPasswordModeChange = () => {
+  if (useWeakPasswordMode.value) {
+    passwordStrength.value = null
+    if (passwordFormRef.value) {
+      passwordFormRef.value.clearValidate()
+    }
+  } else {
+    onPasswordInput() //触发表单校验
+  }
+}
+
+// 获取强度颜色
+const getStrengthColor = (score) => {
+  const colors = ['#f56c6c', '#e6a23c', '#409eff', '#67c23a', '#67c23a']
+  return colors[score] || colors[0]
+}
+
+// 获取强度文本
+const getStrengthText = (score) => {
+  const texts = ['很弱', '弱', '一般', '强', '很强']
+  return texts[score] || texts[0]
+}
+
+// 获取强度CSS类
+const getStrengthClass = (score) => {
+  const classes = [
+    'text-red-600',
+    'text-orange-600',
+    'text-blue-600',
+    'text-green-600',
+    'text-green-600'
+  ]
+  return classes[score] || classes[0]
 }
 
 // 修改主密码
@@ -270,19 +412,25 @@ const handleChangePassword = async () => {
     if (valid) {
       changingPassword.value = true
       try {
-        // 评估新密码强度
-        const strength = passwordCrypto.evaluatePasswordStrength(passwordForm.newPassword);
-        if (!strength.isValid) {
-          ElMessage.warning('请设置更强的密码后再继续');
-          return;
+        // 如果不是弱密码模式，再次验证密码强度
+        if (!useWeakPasswordMode.value) {
+          const strength = passwordCrypto.evaluatePasswordStrength(passwordForm.newPassword)
+          if (!strength.isValid) {
+            ElMessage.warning('请设置更强的密码后再继续')
+            return
+          }
         }
 
-        // 由于安全考虑，这里直接设置新密码（不需要旧密码验证）
-        // 在实际应用中可能需要更复杂的验证机制
-        const result = await window.api.setMasterPassword(passwordForm.newPassword)
+        // 注意：这里应该调用 change-master-password 而不是 setMasterPassword
+        // 因为需要重新加密所有密码数据
+        const result = await window.api.changeMasterPassword(passwordForm.oldPassword, passwordForm.newPassword)
 
         if (result.success) {
-          ElMessage.success('主密码修改成功')
+          if (useWeakPasswordMode.value) {
+            ElMessage.warning('主密码修改成功！但您使用了弱密码模式，安全性较低。')
+          } else {
+            ElMessage.success(result.message || '主密码修改成功！所有数据已重新加密。')
+          }
           handleCloseDialog()
         } else {
           ElMessage.error(result.message || '修改密码失败')
@@ -304,56 +452,56 @@ const backToMain = () => {
 
 // 计算属性
 const totalPasswordBooksCount = computed(() => {
-  let count = 0;
+  let count = 0
   if (workspaceStore.spaces && Array.isArray(workspaceStore.spaces)) {
-    workspaceStore.spaces.forEach(space => {
+    workspaceStore.spaces.forEach((space) => {
       if (space.pwBooks && Array.isArray(space.pwBooks)) {
-        count += space.pwBooks.length;
+        count += space.pwBooks.length
       }
-    });
+    })
   }
-  return count;
-});
+  return count
+})
 
 const totalPasswordsCount = computed(() => {
-  let count = 0;
+  let count = 0
   if (workspaceStore.spaces && Array.isArray(workspaceStore.spaces)) {
-    workspaceStore.spaces.forEach(space => {
+    workspaceStore.spaces.forEach((space) => {
       if (space.pwBooks && Array.isArray(space.pwBooks)) {
-        space.pwBooks.forEach(book => {
+        space.pwBooks.forEach((book) => {
           if (book.pws && Array.isArray(book.pws)) {
-            count += book.pws.length;
+            count += book.pws.length
           }
-        });
+        })
       }
-    });
+    })
   }
-  return count;
-});
+  return count
+})
 
 // 直接从数据库获取统计数据
 const statsData = ref({
   spaceCount: 0,
   passwordBookCount: 0,
   passwordCount: 0
-});
+})
 
 // 获取统计信息
 const loadStats = async () => {
   try {
-    const response = await window.api.getStats();
+    const response = await window.api.getStats()
     if (response.success) {
-      statsData.value = response.data;
+      statsData.value = response.data
     } else {
-      console.error('获取统计数据失败:', response.message);
+      console.error('获取统计数据失败:', response.message)
     }
   } catch (error) {
-    console.error('获取统计数据时出错:', error);
+    console.error('获取统计数据时出错:', error)
   }
-};
+}
 
 // 替换计算属性，使用数据库获取的统计数据
-const actualSpaceCount = computed(() => statsData.value.spaceCount);
-const actualPasswordBookCount = computed(() => statsData.value.passwordBookCount);
-const actualPasswordCount = computed(() => statsData.value.passwordCount);
+const actualSpaceCount = computed(() => statsData.value.spaceCount)
+const actualPasswordBookCount = computed(() => statsData.value.passwordBookCount)
+const actualPasswordCount = computed(() => statsData.value.passwordCount)
 </script>

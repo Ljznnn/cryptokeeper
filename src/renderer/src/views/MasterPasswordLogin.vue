@@ -15,7 +15,8 @@
             placeholder="输入主密码"
             show-password
             autofocus
-            :disabled="isLocked">
+            :disabled="isLocked"
+          >
           </el-input>
         </el-form-item>
 
@@ -25,14 +26,12 @@
             title="账户暂时锁定"
             type="warning"
             :description="`由于多次密码错误，账户已被锁定。请在 ${lockoutTime} 后重试。`"
-            show-icon>
+            show-icon
+          >
           </el-alert>
 
           <div class="mt-3 text-center">
-            <el-countdown
-              :value="authStore.lockoutUntil"
-              format="mm:ss"
-              @finish="onLockoutFinish">
+            <el-countdown :value="authStore.lockoutUntil" format="mm:ss" @finish="onLockoutFinish">
               <template #title>
                 <span class="text-sm text-gray-600">解锁倒计时:</span>
               </template>
@@ -53,11 +52,7 @@
         </div>
 
         <el-form-item>
-          <el-button
-            type="primary"
-            class="w-full"
-            :disabled="isLocked"
-            @click="handleSubmit">
+          <el-button type="primary" class="w-full" :disabled="isLocked" @click="handleSubmit">
             {{ isLocked ? '账户已锁定' : '解锁' }}
           </el-button>
         </el-form-item>
@@ -69,7 +64,8 @@
           type="info"
           description="为保护您的数据安全，连续输错密码将会临时锁定账户"
           show-icon
-          class="mt-4">
+          class="mt-4"
+        >
         </el-alert>
       </el-form>
     </el-card>
@@ -79,51 +75,51 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useAuthStore } from '@renderer/store/authStore'
-import {Router, useRouter} from "vue-router";
+import { Router, useRouter } from 'vue-router'
 
 const authStore = useAuthStore()
 const masterPassword = ref('')
-const router:Router = useRouter()
+const router: Router = useRouter()
 let intervalId: number | null = null
 
 // 计算是否被锁定
 const isLocked = computed(() => {
-  return authStore.isLockedOut();
-});
+  return authStore.isLockedOut()
+})
 
 // 计算锁定剩余时间
 const lockoutTime = computed(() => {
-  const remainingSeconds = authStore.getLockoutRemainingTime();
-  const minutes = Math.floor(remainingSeconds / 60);
-  const seconds = remainingSeconds % 60;
-  return `${minutes}分${seconds}秒`;
-});
+  const remainingSeconds = authStore.getLockoutRemainingTime()
+  const minutes = Math.floor(remainingSeconds / 60)
+  const seconds = remainingSeconds % 60
+  return `${minutes}分${seconds}秒`
+})
 
 // 锁定结束回调
 const onLockoutFinish = () => {
   // 重新检查锁定状态
-  authStore.isLockedOut();
-};
+  authStore.isLockedOut()
+}
 
 // 定期检查锁定状态
 const startLockoutCheck = () => {
   intervalId = window.setInterval(() => {
     if (authStore.isLockedOut()) {
       // 仍在锁定中，继续检查
-      return;
+      return
     } else {
       // 锁定已解除
       if (intervalId) {
-        clearInterval(intervalId);
-        intervalId = null;
+        clearInterval(intervalId)
+        intervalId = null
       }
     }
-  }, 1000);
-};
+  }, 1000)
+}
 
 const handleSubmit = async () => {
   if (isLocked.value) {
-    return; // 被锁定时不处理提交
+    return // 被锁定时不处理提交
   }
 
   // 验证现有密码
@@ -131,13 +127,13 @@ const handleSubmit = async () => {
   if (success) {
     // 密码验证成功后的处理
     console.log('主密码验证成功')
-    masterPassword.value = ''; // 清空输入框
+    masterPassword.value = '' // 清空输入框
     // 跳转到主界面
     await router.push('/')
   } else {
     // 验证失败，如果开始锁定则启动检查
     if (authStore.isLockedOut()) {
-      startLockoutCheck();
+      startLockoutCheck()
     }
   }
 }
@@ -145,16 +141,16 @@ const handleSubmit = async () => {
 // 组件挂载时检查初始锁定状态
 onMounted(() => {
   if (authStore.isLockedOut()) {
-    startLockoutCheck();
+    startLockoutCheck()
   }
-});
+})
 
 // 组件卸载时清理定时器
 onUnmounted(() => {
   if (intervalId) {
-    clearInterval(intervalId);
+    clearInterval(intervalId)
   }
-});
+})
 </script>
 <style scoped>
 .background-container {

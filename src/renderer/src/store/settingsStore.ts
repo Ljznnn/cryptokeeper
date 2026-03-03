@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia'
-import {Ref,ref} from 'vue'
+import { Ref, ref } from 'vue'
 import * as Types from '../models/types'
 
 /**
  * 配置数据管理
  */
 export const useSettingsStore = defineStore('settings', () => {
-  const settings: Ref<Types.Settings> = ref({ defaultSpaceId:''})
+  const settings: Ref<Types.Settings> = ref({ defaultSpaceId: '' })
 
   const initSettings = async () => {
     await loadSettings()

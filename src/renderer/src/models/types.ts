@@ -29,7 +29,7 @@ export interface Password {
 }
 
 export interface Settings {
-  defaultSpaceId?: string,
+  defaultSpaceId?: string
   masterPasswordHash?: string
   masterPasswordSalt?: string
 }

@@ -8,17 +8,21 @@
           <h1 class="text-xl font-bold text-blue-600 select-none">CryptoKeeper</h1>
         </div>
         <div class="flex items-center space-x-2">
-          <SpaceSelector @space-change="switchSpaceHandler" @create-space="showCreateSpaceDialog"
-                         :workspaces="workspaceStore.spaces" :currentSpaceId="workspaceStore.currentSpaceId"/>
+          <SpaceSelector
+            @space-change="switchSpaceHandler"
+            @create-space="showCreateSpaceDialog"
+            :workspaces="workspaceStore.spaces"
+            :currentSpaceId="workspaceStore.currentSpaceId"
+          />
           <el-button @click="showDeleteWorkspaceDialog">
             <el-icon>
-              <Delete/>
+              <Delete />
             </el-icon>
             删除空间
           </el-button>
           <el-button @click="showSettings">
             <el-icon>
-              <Setting/>
+              <Setting />
             </el-icon>
             设置
           </el-button>
@@ -35,13 +39,9 @@
         <aside class="w-64 bg-white border-r flex flex-col">
           <div class="p-4 border-b flex justify-between items-center">
             <h2 class="font-semibold select-none">密码本</h2>
-            <el-button
-              type="primary"
-              circle
-              size="small"
-              @click="showCreateBookDialog">
+            <el-button type="primary" circle size="small" @click="showCreateBookDialog">
               <el-icon>
-                <Plus/>
+                <Plus />
               </el-icon>
             </el-button>
           </div>
@@ -60,8 +60,8 @@
         <main class="flex-1 overflow-auto bg-gray-50">
           <div v-if="!workspaceStore.currentBook" class="flex items-center justify-center h-full">
             <div class="text-center text-gray-500">
-              <el-icon style="font-size: 48px;">
-                <Document/>
+              <el-icon style="font-size: 48px">
+                <Document />
               </el-icon>
               <p class="mt-2">请选择一个密码本</p>
             </div>
@@ -84,7 +84,7 @@
     <el-dialog v-model="createWorkspaceDialogVisible" title="创建空间" width="500">
       <el-form :model="newWorkspaceForm" label-width="80px">
         <el-form-item label="名称">
-          <el-input v-model="newWorkspaceForm.name" placeholder="请输入空间名称"/>
+          <el-input v-model="newWorkspaceForm.name" placeholder="请输入空间名称" />
         </el-form-item>
         <!--        <el-form-item label="描述">-->
         <!--          <el-input-->
@@ -117,7 +117,7 @@
     <el-dialog v-model="createBookDialogVisible" title="创建密码本" width="500">
       <el-form :model="newBookForm" label-width="80px">
         <el-form-item label="名称">
-          <el-input v-model="newBookForm.name" placeholder="请输入密码本名称"/>
+          <el-input v-model="newBookForm.name" placeholder="请输入密码本名称" />
         </el-form-item>
         <el-form-item label="描述">
           <el-input
@@ -138,7 +138,7 @@
     <el-dialog v-model="editBookDialogVisible" title="编辑密码本" width="500">
       <el-form :model="editBookForm" label-width="80px">
         <el-form-item label="名称">
-          <el-input v-model="editBookForm.name" placeholder="请输入密码本名称"/>
+          <el-input v-model="editBookForm.name" placeholder="请输入密码本名称" />
         </el-form-item>
         <el-form-item label="描述">
           <el-input
@@ -172,24 +172,16 @@
     <el-dialog v-model="addPasswordDialogVisible" title="添加密码" width="500">
       <el-form :model="passwordForm" label-width="80px">
         <el-form-item label="用户名">
-          <el-input v-model="passwordForm.username" placeholder="请输入用户名"/>
+          <el-input v-model="passwordForm.username" placeholder="请输入用户名" />
         </el-form-item>
         <el-form-item label="密码">
-          <el-input
-            v-model="passwordForm.password"
-            placeholder="请输入密码"
-            show-password
-          />
+          <el-input v-model="passwordForm.password" placeholder="请输入密码" show-password />
         </el-form-item>
         <el-form-item label="描述">
-          <el-input
-            v-model="passwordForm.desc"
-            type="textarea"
-            placeholder="请输入描述（可选）"
-          />
+          <el-input v-model="passwordForm.desc" type="textarea" placeholder="请输入描述（可选）" />
         </el-form-item>
         <el-form-item label="网址">
-          <el-input v-model="passwordForm.url" placeholder="请输入网址（可选）"/>
+          <el-input v-model="passwordForm.url" placeholder="请输入网址（可选）" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -204,24 +196,16 @@
     <el-dialog v-model="editPasswordDialogVisible" title="编辑密码" width="500">
       <el-form :model="passwordForm" label-width="80px">
         <el-form-item label="用户名">
-          <el-input v-model="passwordForm.username" placeholder="请输入用户名"/>
+          <el-input v-model="passwordForm.username" placeholder="请输入用户名" />
         </el-form-item>
         <el-form-item label="密码">
-          <el-input
-            v-model="passwordForm.password"
-            placeholder="请输入密码"
-            show-password
-          />
+          <el-input v-model="passwordForm.password" placeholder="请输入密码" show-password />
         </el-form-item>
         <el-form-item label="描述">
-          <el-input
-            v-model="passwordForm.desc"
-            type="textarea"
-            placeholder="请输入描述（可选）"
-          />
+          <el-input v-model="passwordForm.desc" type="textarea" placeholder="请输入描述（可选）" />
         </el-form-item>
         <el-form-item label="网址">
-          <el-input v-model="passwordForm.url" placeholder="请输入网址（可选）"/>
+          <el-input v-model="passwordForm.url" placeholder="请输入网址（可选）" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -245,14 +229,14 @@
 </template>
 
 <script setup lang="ts">
-import {onBeforeMount, ref, reactive} from 'vue'
-import {useRouter} from 'vue-router'
-import {ElMessage} from 'element-plus'
+import { onBeforeMount, ref, reactive } from 'vue'
+import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
 import SpaceSelector from '../components/layout/SpaceSelector.vue'
 import BookList from '../components/password/BookList.vue'
 import PasswordList from '../components/password/PasswordList.vue'
-import {Plus, Document, Setting, Delete} from '@element-plus/icons-vue'
-import {useWorkspaceStore} from '../store/workspaceStore'
+import { Plus, Document, Setting, Delete } from '@element-plus/icons-vue'
+import { useWorkspaceStore } from '../store/workspaceStore'
 import * as Types from '../models/types'
 
 const router = useRouter()
@@ -335,13 +319,16 @@ const handleCreateWorkspace = async () => {
     return
   }
 
-  if (workspaceStore.spaces.some(t => t.name == newWorkspaceForm.name)) {
+  if (workspaceStore.spaces.some((t) => t.name == newWorkspaceForm.name)) {
     ElMessage.warning('空间已存在')
     return
   }
 
   try {
-    const newSpace: Types.Space = await workspaceStore.createSpace(newWorkspaceForm.name, newWorkspaceForm.desc)
+    const newSpace: Types.Space = await workspaceStore.createSpace(
+      newWorkspaceForm.name,
+      newWorkspaceForm.desc
+    )
     ElMessage.success('空间创建成功')
     workspaceStore.switchSpace(newSpace.id)
     createWorkspaceDialogVisible.value = false
@@ -388,13 +375,17 @@ const handleCreateBook = async () => {
     return
   }
 
-  if (workspaceStore.passwordBooks.some(t => t.name == newBookForm.name)) {
+  if (workspaceStore.passwordBooks.some((t) => t.name == newBookForm.name)) {
     ElMessage.warning('密码本已存在')
     return
   }
 
   try {
-    await workspaceStore.createPasswordBook(newBookForm.name, workspaceStore.currentSpace.id, newBookForm.desc)
+    await workspaceStore.createPasswordBook(
+      newBookForm.name,
+      workspaceStore.currentSpace.id,
+      newBookForm.desc
+    )
     ElMessage.success('密码本创建成功')
     createBookDialogVisible.value = false
   } catch (error: any) {
@@ -424,7 +415,9 @@ const handleEditBook = async () => {
     return
   }
 
-  if (workspaceStore.passwordBooks.some(t => t.name == editBookForm.name && t.id != editBookForm.id)) {
+  if (
+    workspaceStore.passwordBooks.some((t) => t.name == editBookForm.name && t.id != editBookForm.id)
+  ) {
     ElMessage.warning('密码本已存在')
     return
   }
@@ -478,7 +471,12 @@ const showAddPasswordDialog = () => {
 
 // 处理添加密码
 const handleAddPassword = async () => {
-  if (!workspaceStore.currentBook || !workspaceStore.currentSpace || !passwordForm.username.trim() || !passwordForm.password.trim()) {
+  if (
+    !workspaceStore.currentBook ||
+    !workspaceStore.currentSpace ||
+    !passwordForm.username.trim() ||
+    !passwordForm.password.trim()
+  ) {
     ElMessage.error('缺少必要参数')
     return
   }
@@ -491,7 +489,11 @@ const handleAddPassword = async () => {
       desc: passwordForm.desc
     }
 
-    await workspaceStore.createPassword(passwordData, workspaceStore.currentSpace.id, workspaceStore.currentBook.id)
+    await workspaceStore.createPassword(
+      passwordData,
+      workspaceStore.currentSpace.id,
+      workspaceStore.currentBook.id
+    )
     ElMessage.success('密码添加成功')
     addPasswordDialogVisible.value = false
   } catch (error: any) {
@@ -522,7 +524,11 @@ const handleEditPassword = async () => {
       url: passwordForm.url,
       desc: passwordForm.desc
     }
-    await workspaceStore.updatePassword(workspaceStore.currentSpace.id, workspaceStore.currentBook.id, passwordData)
+    await workspaceStore.updatePassword(
+      workspaceStore.currentSpace.id,
+      workspaceStore.currentBook.id,
+      passwordData
+    )
     editPasswordDialogVisible.value = false
     ElMessage.success('编辑密码成功')
   } catch (error: any) {
@@ -544,7 +550,11 @@ const handleDeletePassword = async () => {
   }
 
   try {
-    await workspaceStore.deletePassword(workspaceStore.currentSpace.id, workspaceStore.currentBook.id, deletingPassword.value?.id)
+    await workspaceStore.deletePassword(
+      workspaceStore.currentSpace.id,
+      workspaceStore.currentBook.id,
+      deletingPassword.value?.id
+    )
     ElMessage.success('密码已删除')
     deletePasswordDialogVisible.value = false
   } catch (error: any) {

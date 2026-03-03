@@ -12,7 +12,7 @@
           <h3>回收站</h3>
         </template>
         <div v-if="deletedItems.length === 0" class="text-center py-8 text-gray-500">
-          <el-icon style="font-size: 32px;"><Delete /></el-icon>
+          <el-icon style="font-size: 32px"><Delete /></el-icon>
           <p class="mt-2">回收站为空</p>
         </div>
         <div v-else>
@@ -26,7 +26,9 @@
             <el-table-column label="操作" width="200">
               <template #default="scope">
                 <el-button size="small" @click="restoreItem(scope.row.id)">恢复</el-button>
-                <el-button size="small" type="danger" @click="permanentDelete(scope.row.id)">彻底删除</el-button>
+                <el-button size="small" type="danger" @click="permanentDelete(scope.row.id)"
+                  >彻底删除</el-button
+                >
               </template>
             </el-table-column>
           </el-table>

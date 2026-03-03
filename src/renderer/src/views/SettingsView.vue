@@ -96,7 +96,7 @@
               <div>
                 <h4 class="text-lg font-medium mb-2">🔗 项目信息</h4>
                 <ul class="list-disc list-inside space-y-1 text-gray-700">
-                  <li>GitHub: <a href="https://github.com/Ljznnn/cryptokeeper" class="text-blue-600 hover:underline" target="_blank">https://github.com/your-username/cryptokeeper</a></li>
+                  <li>GitHub: <a href="https://github.com/Ljznnn/cryptokeeper" class="text-blue-600 hover:underline" target="_blank">https://github.com/Ljznnn/cryptokeeper</a></li>
                   <li>版本: 1.0.0</li>
                   <li>许可证: MIT</li>
                 </ul>

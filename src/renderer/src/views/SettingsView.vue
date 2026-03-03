@@ -325,9 +325,6 @@ watch(
   async (newValue) => {
     try {
       const success = await settingsStore.updateSetting('defaultSpaceId', newValue)
-      if (success) {
-        ElMessage.success('设置已保存')
-      }
     } catch (error) {
       console.error('保存设置失败:', error)
       ElMessage.error('保存设置失败')

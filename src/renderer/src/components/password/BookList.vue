@@ -41,16 +41,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { watch } from 'vue'
 import { Notebook, MoreFilled } from '@element-plus/icons-vue'
 import * as Types from '../../models/types'
 
 interface Props {
   books: Types.PasswordBook[]
+  currentBookId: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  books: () => []
+  books: () => [],
+  currentBookId: ''
 })
 
 const emit = defineEmits<{
@@ -60,17 +62,14 @@ const emit = defineEmits<{
   (e: 'no-book'): void
 }>()
 
-const currentBookId = ref('')
-
 // 自动选中第一个
 watch(
   () => props.books,
   (newList) => {
-    if (newList.length > 0) {
+    if (newList.length > 0 && !props.currentBookId) {
       const firstItem = newList[0]
-      currentBookId.value = firstItem.id
       emit('select-book', firstItem)
-    } else {
+    } else if (newList.length === 0) {
       emit('no-book')
     }
   },

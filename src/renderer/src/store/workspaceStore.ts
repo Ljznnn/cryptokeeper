@@ -20,6 +20,14 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     await settingsStore.initSettings()
     currentSpaceId.value = settingsStore.getSetting('defaultSpaceId') ?? ''
     await loadSpaces()
+    
+    // 如果没有设置默认空间，且有空间存在，默认选择第一个空间
+    if (!currentSpaceId.value && spaces.value.length > 0) {
+      currentSpaceId.value = spaces.value[0].id
+      // 保存为默认空间
+      await settingsStore.updateSetting('defaultSpaceId', currentSpaceId.value)
+    }
+    
     await switchSpace(currentSpaceId.value)
   }
 
@@ -86,9 +94,14 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       const result = await window.api.deleteSpace(spaceId)
       if (result.success) {
         spaces.value = spaces.value.filter((space) => space.id !== spaceId)
-        currentSpaceId.value = ''
-        currentSpace.value = null
-        passwordBooks.value = []
+        // 如果还有其他空间，自动切换到第一个
+        if (spaces.value.length > 0) {
+          await switchSpace(spaces.value[0].id)
+        } else {
+          currentSpaceId.value = ''
+          currentSpace.value = null
+          passwordBooks.value = []
+        }
         return true
       } else {
         throw new Error(result.message)
@@ -163,6 +176,8 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       const result = await window.api.createPasswordBook(name, spaceId, desc)
       if (result.success) {
         passwordBooks.value.push(result.book)
+        // 默认选中新创建的密码本
+        switchPasswordBook(result.book.id)
         return result.book
       } else {
         throw new Error(result.message)
@@ -181,6 +196,12 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       const result = await window.api.deletePasswordBook(spaceId, bookId)
       if (result.success) {
         passwordBooks.value = passwordBooks.value.filter((book) => book.id !== bookId)
+        // 如果还有其他密码本，自动切换到第一个
+        if (passwordBooks.value.length > 0) {
+          switchPasswordBook(passwordBooks.value[0].id)
+        } else {
+          currentBook.value = null
+        }
         return true
       } else {
         throw new Error(result.message)

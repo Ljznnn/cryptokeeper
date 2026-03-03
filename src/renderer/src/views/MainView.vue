@@ -48,6 +48,7 @@
           <div class="flex-1 overflow-y-auto">
             <BookList
               :books="workspaceStore.passwordBooks"
+              :currentBookId="workspaceStore.currentBook?.id || ''"
               @select-book="selectPasswordBook"
               @delete-book="showDeleteBookDialog"
               @edit-book="showEditBookDialog"

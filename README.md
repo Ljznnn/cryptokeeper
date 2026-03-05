@@ -131,6 +131,10 @@ npm run build:linux # Linux
 
 ## 📸 界面预览
 
+![设置主密码](https://cdn.jsdelivr.net/gh/Ljznnn/PictureHub@main/img/20260305102003236.png)
+![登入界面](https://cdn.jsdelivr.net/gh/Ljznnn/PictureHub@main/img/20260305102213369.png)
+![主界面](https://cdn.jsdelivr.net/gh/Ljznnn/PictureHub@main/img/20260305102003237.png)
+
 ## 🤝 贡献指南
 
 欢迎任何形式的贡献！
